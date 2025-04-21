@@ -1,0 +1,40 @@
+{
+    "manifest_version": 3,
+    "name": "URL Güvenlik Analiz Eklentisi",
+    "version": "1.2",
+    "description": "Google sonuçlarındaki URL'leri analiz eder.",
+    "permissions": [
+        "activeTab",
+        "scripting"
+    ],
+    "host_permissions": [
+        "*://*.google.com/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "*://www.google.com/search*"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "icons/warning.png",
+                "icons/check.png"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "icons": {
+        "48": "icons/check.png"
+    }
+}
