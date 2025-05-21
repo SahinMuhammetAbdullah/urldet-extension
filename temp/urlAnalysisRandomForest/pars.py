@@ -185,16 +185,15 @@ def is_executable(path):
 
 
 def is_port_eighty(url):
-    # # URL'nin başında http veya https yoksa -1 döndür
-    # if not url.startswith(("http://", "https://")):
-    #     return -1
-    # # https ile başlıyorsa 1 döndür
-    # elif url.startswith("https://"):
-    #     return 1
-    # # http ile başlıyorsa 0 döndür
-    # elif url.startswith("http://"):
-    #     return 0
-    return -1
+    # URL'nin başında http veya https yoksa -1 döndür
+    if not url.startswith(("http://", "https://")):
+        return -1
+    # https ile başlıyorsa 1 döndür
+    elif url.startswith("https://"):
+        return 1
+    # http ile başlıyorsa 0 döndür
+    elif url.startswith("http://"):
+        return 0
 
 
 def calculate_character_continuity_rate(url):

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      min-width: 150px;
+      font-family: Arial, sans-serif;
+      padding: 10px;
+      background-color: white;
+      color: black;
+      transition: background-color 0.3s, color 0.3s;
+      border-radius: 30px;
+    }
+
+    body.dark {
+      background-color: #2e2e2e;
+      color: white;
+    }
+
+    #status {
+      font-weight: bold;
+      margin-top: 5px;
+      border-radius: 30px;
+      padding: 5px 10px;
+      background-color: #f0f0f0;
+    }
+
+    body.dark #status {
+      background-color: #444;
+    }
+
+    .toggle-button {
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 30px;
+      cursor: pointer;
+      border: none;
+      width: 100%;
+      color: white;
+      transition: background-color 0.3s;
+    }
+
+    /* Eklenti aktif/pasif butonu için */
+    .enabled {
+      background-color: #4CAF50;
+    }
+
+    .disabled {
+      background-color: #d9534f;
+    }
+
+    body.dark .enabled {
+      background-color: #5cb85c;
+    }
+
+    body.dark .disabled {
+      background-color: #c9302c;
+    }
+
+    /* Tema butonu için (renkler temaya göre değişir) */
+    .mode-button {
+      color: black;
+      background-color: #e0e0e0;
+    }
+
+    body.dark .mode-button {
+      color: white;
+      background-color: #555;
+    }
+
+    #reloadPage {
+      margin-top: 15px;
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 30px;
+      cursor: pointer;
+      border: none;
+      background-color: #2196F3;
+      color: white;
+      width: 100%;
+    }
+
+    body.dark #reloadPage {
+      background-color: #337ab7;
+    }
+  </style>
+</head>
+<body>
+  <button id="toggleScript" class="toggle-button">Eklenti Durumu</button>
+  <p id="status">Durum kontrol ediliyor...</p>
+  <button id="darkMode" class="toggle-button mode-button">Koyu Tema</button>
+  <button id="reloadPage">Sayfayı Yenile</button>
+
+  <script src="popup.js"></script>
+</body>
+</html>
