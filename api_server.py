@@ -8,7 +8,7 @@ CORS(app)
 
 # URLAnalyzer'ı başlat ve modelleri yükle
 analyzer = URLAnalyzer(
-    rf_model_path="models/rf_binary99.pkl",
+    rf_model_path="models/rf_binaryV6.pkl",
     dqn_model_path="models/multiclass_dqn_modelV4-92-new"
 )
 

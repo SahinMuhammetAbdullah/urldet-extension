@@ -1,3 +1,4 @@
+import pandas as pd
 import urllib
 from urllib.parse import urlparse, parse_qs, parse_qsl
 import tldextract
@@ -5,6 +6,7 @@ import re
 from collections import Counter
 import math
 import os
+import csv
 
 
 # URL'den özellikleri çıkaran fonksiyonlar
@@ -93,7 +95,7 @@ def get_avg_domain_token_len(url):
 def get_long_domain_token_len(domain):
     """
     Bir URL'deki domain'in en uzun token uzunluğunu döndürür.
-    `com.tr`, `co.uk` gibi suffix'leri doğru şekilde tek bir token olarak sayar.
+    com.tr, co.uk gibi suffix'leri doğru şekilde tek bir token olarak sayar.
     """
     # Domain'i tldextract ile ayrıştır
     extracted = tldextract.extract(domain)
@@ -121,23 +123,32 @@ def get_avg_path_token_len(path):
     return sum(len(token) for token in tokens) / len(tokens) if tokens else 0
 
 
-# 1. TLD listesini oku
-def load_tld_list(file_path="pars_state/new_tld_list.txt"):
-    with open(file_path, "r", encoding="utf-8") as f:
-        tld_list = [line.strip().lstrip('.') for line in f if line.strip()]
-    return tld_list
 
 
-def get_tld_index(url):
+def get_tld_risk_for_url(url):
+    # 1. tldextract ile TLD'yi çıkar
     extracted = tldextract.extract(url)
-    tld = extracted.suffix
-    tld_list = load_tld_list("pars_state/new_tld_list.txt")
+    suffix = extracted.suffix  # örneğin: 'gov.tr'
 
-    if not tld:
-        return -1
+    if not suffix:
+        return 50  # TLD yoksa varsayılan değer dön
+    
+    tld = '.' + suffix  # başına . ekleyerek .gov.tr formatına getir
 
-    # 3. TLD listesinde arayıp indeksini döndür
-    return ((tld_list.index(tld)) + 1)  if tld in tld_list else 0
+    # 2. CSV dosyasını oku ve risk değerini bul
+    try:
+        with open("pars_state/tld_weights.csv", mode="r", encoding="utf-8") as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                if row["tld_name"].strip() == tld:
+                    return float(row["weighted_risk_percentage"])
+    except FileNotFoundError:
+        print("tld_weights.csv dosyası bulunamadı.")
+
+    # 3. Listede yoksa varsayılan risk değeri dön
+    return 50
+
+
 
 
 def get_char_comp_vowels(url):
@@ -453,7 +464,7 @@ def get_url_features(url, index):
         "avgdomaintokenlen": get_avg_domain_token_len(domain),  # 1.5-29.5
         "longdomaintokenlen": get_long_domain_token_len(domain),  # 2-63
         "avgpathtokenlen": get_avg_path_token_len(path),  # 0-105.0 ve NaN
-        "tld": get_tld_index(url),  # 2-19
+        "tld": get_tld_risk_for_url(url),  # 2-19
         "charcompvowels": get_char_comp_vowels(url),  # 0-192
         "charcompace": get_char_comp_ace(url),  # 0-142
         "ldl_url": calculate_ldl(url),  # 0-207
@@ -529,3 +540,27 @@ def get_url_features(url, index):
         "URL_Type_obf_Type": None,  # Bu sütun, CSV'den gelen 'type' sütunu ile doldurulacak
     }
     return features
+
+# # CSV dosyasını oku
+# input_csv = "pars_state/kontrol.csv"  # URL ve etiketlerin bulunduğu CSV dosyası
+# df = pd.read_csv(input_csv)
+
+# # URL'leri özelliklere ayır ve etiketleri koru
+# features_list = []
+# for index, row in df.iterrows():
+#     url = row["url"]
+#     url_type = row["type"]  # 'type' sütunundaki değer
+#     features = get_url_features(url, index)
+#     features["URL_Type_obf_Type"] = (
+#         url_type  # 'type' sütununu 'URL_Type_obf_Type' sütununa aktar
+#     )
+#     features_list.append(features)
+
+# # Yeni DataFrame oluştur
+# output_df = pd.DataFrame(features_list)
+
+# # CSV olarak kaydet
+# output_csv = "kontrolV2.csv"
+# output_df.to_csv(output_csv, index=False)
+
+# print(f"Özellikler başarıyla çıkarıldı ve '{output_csv}' dosyasına kaydedildi.")
