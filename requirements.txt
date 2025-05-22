@@ -5,3 +5,4 @@ joblib
 stable-baselines3
 numpy
 tldextract
+scikit-learn
