@@ -1,8 +1,0 @@
-flask
-flask-cors
-pandas
-joblib
-stable-baselines3
-numpy
-tldextract
-scikit-learn
