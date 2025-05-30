@@ -7,27 +7,27 @@ chrome.storage.sync.get(["extensionEnabled"], function (result) {
     const searchLinks = document.querySelectorAll('#search a[href^="http"]');
 
     const excludedSelectors = [
-        '.kp-blk',
-        '.knowledge-panel',
-        '.mgAbYb.OSrXXb.RES9jf.IFnjPb',
-        '.ZxS7Db',
-        '.Ea5p3b',
-        '.rGhul',
-        '.UFQ0Gb.SLPe5b',
-        '.action-menu',
-        '.V0MxL',
-        '.commercial-unit-desktop-top',
-        '.kb0PBd.LnCrMe',
-        '.rIRoqf',
-        '[aria-label*="Çeviri"]',
-        '[aria-label*="Translate"]',
-        'a[href*="translate.google"]',
-        '.uhHOwf',
-        '.XNo5Ab',
-        '.ez24Df',
-        '.jfk-button',
-        '.VfPpkd-Bz112c'
-    ];
+        '.kp-blk', // Google bilgi paneli bloğu (knowledge panel block)
+        '.knowledge-panel', // Sağ tarafta çıkan detaylı bilgi paneli
+        '.mgAbYb.OSrXXb.RES9jf.IFnjPb', // Google'ın öne çıkan snippet bileşeni
+        '.ZxS7Db', // Arama sonucunda çıkan kart yapısı (örneğin haber kutuları)
+        '.Ea5p3b', // Reklam kutuları
+        '.rGhul', // Google arama sonuçlarındaki hızlı cevap kutusu
+        '.UFQ0Gb.SLPe5b', // Üstteki hızlı link seçenekleri ya da "Araçlar" bölümü
+        '.action-menu', // Seçenek menüsü (örneğin üç nokta menüsü)
+        '.V0MxL', // Arama sonucu üstündeki bağlantı türü filtreleri (Tümü, Görseller vb.)
+        '.commercial-unit-desktop-top', // Sayfanın üst kısmında yer alan reklamlar
+        '.kb0PBd.LnCrMe', // Sayfanın yan kısmındaki bazı özel bileşenler
+        '.rIRoqf', // Kullanıcı tarafından özelleştirilmiş sonuçlar veya öneriler
+        '[aria-label*="Çeviri"]', // "Çeviri" ibaresi içeren bileşenler
+        '[aria-label*="Translate"]', // "Translate" içeren öğeler (İngilizce çeviri kutuları)
+        'a[href*="translate.google"]', // translate.google.com bağlantıları
+        '.uhHOwf', // Google özel bilgi kartları (örneğin tarih, saat, konum bilgisi)
+        '.XNo5Ab', // Sıkça sorulan sorular (FAQ) kutuları
+        '.ez24Df', // Google'ın önerilen sorgular bileşeni
+        '.jfk-button', // Google’ın klasik buton bileşeni (örneğin "Daha fazla göster")
+        '.VfPpkd-Bz112c' // Material Design ile yapılmış modern Google butonları
+    ]; 
 
     searchLinks.forEach(link => {
         if (excludedSelectors.some(sel => link.closest(sel))) return;

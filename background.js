@@ -1,6 +1,6 @@
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.action === "analyzeUrl") {
-        fetch("http://213.142.159.41:5000/analyze", {
+        fetch("https://urldet.masahin.dev/analyze", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
