@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
             displayResult(response);
         });
     };
-    
+
     // --- Olay Dinleyicileri ---
     analyzeBtn.addEventListener("click", handleAnalyze);
     urlInput.addEventListener("keypress", (e) => {
@@ -117,11 +117,19 @@ document.addEventListener("DOMContentLoaded", () => {
         resultDiv.className = `result ${data.is_malicious ? 'malicious' : 'safe'}`;
 
         const riskLevel = data.malicious_probability > 0.8 ? 'Yüksek' :
-                          data.malicious_probability > 0.6 ? 'Orta' :
-                          data.malicious_probability > 0.4 ? 'Düşük' : 'Minimal';
-        
-        const riskColor = riskLevel === 'Yüksek' ? '#ff4757' : riskLevel === 'Orta' ? '#ff6348' :
-                          riskLevel === 'Düşük' ? '#ffa502' : '#2ed573';
+            data.malicious_probability > 0.6 ? 'Orta' :
+                data.malicious_probability > 0.4 ? 'Düşük' : 'Minimal';
+
+        // --- EN ÖNEMLİ DEĞİŞİKLİK BURADA ---
+        // Risk seviyesi metninin rengini, arka planın güvenli mi yoksa tehlikeli mi olduğuna göre belirle.
+        let riskTextColor;
+        if (data.is_malicious) {
+            // Tehlikeli (kırmızı/turuncu) arka plan üzerinde açık renk daha iyi okunur.
+            riskTextColor = '#FFFFFF'; // Beyaz
+        } else {
+            // Güvenli (yeşil) arka plan üzerinde koyu renk daha iyi okunur.
+            riskTextColor = '#145A32'; // Koyu Yeşil (veya #333 de olabilir)
+        }
 
         // Sonuçları HTML olarak oluştur
         resultDiv.innerHTML = `
@@ -134,8 +142,14 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="result-details">
                 <div class="detail-card">
                     <h4>🛡️ ${chrome.i18n.getMessage("resultStatus")}</h4>
-                    <p><strong>${chrome.i18n.getMessage("resultStatus")}:</strong> ${data.is_malicious ? chrome.i18n.getMessage("resultMalicious") : chrome.i18n.getMessage("resultSafe")}</p>
-                    <p><strong>${chrome.i18n.getMessage("resultRiskLevel")}:</strong> <span style="color: ${riskColor}; font-weight: bold;">${riskLevel}</span></p>
+                    <p>
+                        <strong>${chrome.i18n.getMessage("resultStatus")}:</strong> 
+                        ${data.is_malicious ? chrome.i18n.getMessage("resultMalicious") : chrome.i18n.getMessage("resultSafe")}
+                    </p>
+                    <p>
+                        <strong>${chrome.i18n.getMessage("resultRiskLevel")}:</strong> 
+                        <span style="color: ${riskTextColor}; font-weight: bold;">${riskLevel}</span>
+                    </p>
                 </div>
                 <div class="detail-card">
                     <h4>📊 ${chrome.i18n.getMessage("resultProbabilities")}</h4>
@@ -147,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <h4>🎯 ${chrome.i18n.getMessage("resultThreatCategory")}</h4>
                     <p><strong>${chrome.i18n.getMessage("resultType")}:</strong> ${data.malware_type || 'N/A'}</p>
                 </div>
-                <div class="detail-card" style="background: rgba(255, 0, 0, 0.2);">
+                <div class="detail-card" style="background: rgba(255, 255, 255, 0.2);">
                     <h4>⚠️ ${chrome.i18n.getMessage("resultSafetyWarningTitle")}</h4>
                     <p>${chrome.i18n.getMessage("resultSafetyWarningText")}</p>
                 </div>` : ''}
