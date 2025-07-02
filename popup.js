@@ -1,63 +1,77 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const toggle = document.getElementById("toggleScript");
-  const status = document.getElementById("status");
-  const darkModeToggle = document.getElementById("darkMode");
-  const reloadButton = document.getElementById("reloadPage");
+  // --- Elementler ---
+  const toggleScriptBtn = document.getElementById("toggleScript");
+  const statusP = document.getElementById("status");
+  const openSidePanelBtn = document.getElementById("openSidePanelBtn");
+  const darkModeBtn = document.getElementById("darkModeBtn");
+  const visitWebsiteBtn = document.getElementById("visitWebsiteBtn");
+  const rateExtensionBtn = document.getElementById("rateExtensionBtn");
 
-  function updateStatusText(enabled) {
-    status.textContent = enabled ? "Eklenti aktif" : "Eklenti pasif";
-    status.style.color = enabled ? "green" : "red";
-    toggle.className = "toggle-button " + (enabled ? "enabled" : "disabled");
-    toggle.textContent = enabled ? "Eklenti Aktif" : "Eklenti Pasif";
-  }
+  // --- Yardımcı Fonksiyonlar ---
+  const localize = () => {
+    document.querySelectorAll('[data-i18n-text]').forEach(el => {
+      const message = chrome.i18n.getMessage(el.getAttribute('data-i18n-text'));
+      if (message) el.innerText = message;
+    });
+  };
 
-  function updateDarkModeButton(isDark) {
-    darkModeToggle.textContent = isDark ? "Koyu Tema Açık" : "Koyu Tema Kapalı";
+  const updateStatusUI = (enabled) => {
+    statusP.textContent = chrome.i18n.getMessage(enabled ? "statusEnabled" : "statusDisabled");
+    toggleScriptBtn.textContent = chrome.i18n.getMessage(enabled ? "enableExtension" : "disableExtension");
+    toggleScriptBtn.className = "btn " + (enabled ? "enabled" : "disabled");
+  };
+
+  const updateDarkModeUI = (isDark) => {
     document.body.classList.toggle("dark", isDark);
-    // .mode-button sınıfı zaten temaya göre renklendirildi, ekstra sınıfa gerek yok
-  }
+  };
 
-  // Depolanan değerleri yükle
-  chrome.storage.sync.get(["extensionEnabled", "darkMode"], function (result) {
-    const enabled = result.extensionEnabled ?? true;
-    updateStatusText(enabled);
+  const reloadActiveTab = () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0] && tabs[0].url.startsWith("http")) { // Sadece http/s sayfalarını yenile
+        chrome.tabs.reload(tabs[0].id);
+      }
+    });
+  };
 
-    const isDark = result.darkMode ?? false;
-    updateDarkModeButton(isDark);
+  // --- Başlangıç ---
+  chrome.storage.sync.get(["extensionEnabled", "darkMode"], (result) => {
+    localize();
+    updateStatusUI(result.extensionEnabled ?? true);
+    updateDarkModeUI(result.darkMode ?? false);
   });
 
-  // Eklenti durumunu değiştir
-  toggle.addEventListener("click", function () {
-    chrome.storage.sync.get("extensionEnabled", function (result) {
-      const enabled = !(result.extensionEnabled ?? true);
-      chrome.storage.sync.set({ extensionEnabled: enabled }, function () {
-        updateStatusText(enabled);
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-          if (tabs[0]?.id) {
-            chrome.scripting.executeScript({
-              target: { tabId: tabs[0].id },
-              files: ["content.js"]
-            });
-          }
-        });
+  // --- Olay Dinleyiciler ---
+  toggleScriptBtn.addEventListener("click", () => {
+    chrome.storage.sync.get("extensionEnabled", (result) => {
+      const newStatus = !(result.extensionEnabled ?? true);
+      chrome.storage.sync.set({ extensionEnabled: newStatus }, () => {
+        updateStatusUI(newStatus);
+        reloadActiveTab();
       });
     });
   });
 
-  // Tema durumunu değiştir
-  darkModeToggle.addEventListener("click", function () {
-    chrome.storage.sync.get("darkMode", function (result) {
-      const isDark = !(result.darkMode ?? false);
-      chrome.storage.sync.set({ darkMode: isDark }, function () {
-        updateDarkModeButton(isDark);
+  darkModeBtn.addEventListener("click", () => {
+    chrome.storage.sync.get("darkMode", (result) => {
+      const newStatus = !(result.darkMode ?? false);
+      chrome.storage.sync.set({ darkMode: newStatus }, () => {
+        updateDarkModeUI(newStatus);
+        reloadActiveTab();
       });
     });
   });
 
-  // Sayfayı yenile
-  reloadButton.addEventListener("click", function () {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      if (tabs[0]?.id) chrome.tabs.reload(tabs[0].id);
-    });
+  openSidePanelBtn.addEventListener("click", () => {
+    chrome.runtime.sendMessage({ action: "openSidePanel" });
+  });
+
+  visitWebsiteBtn.addEventListener("click", () => {
+    chrome.tabs.create({ url: "https://urldet.masahin.dev" });
+  });
+
+  rateExtensionBtn.addEventListener("click", () => {
+    // Mağaza linkinizi buraya ekleyin
+    const storeUrl = "https://chrome.google.com/webstore/detail/YOUR_EXTENSION_ID";
+    chrome.tabs.create({ url: storeUrl });
   });
 });

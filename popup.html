@@ -3,96 +3,85 @@
 <head>
   <meta charset="utf-8">
   <style>
+    :root {
+      /* Açık Tema Renkleri */
+      --popup-bg: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+      --popup-text: white;
+      --button-bg: rgba(255, 255, 255, 0.2);
+      --button-hover-bg: rgba(255, 255, 255, 0.3);
+      --status-bg: rgba(255, 255, 255, 0.15);
+      /* Koyu Tema Renkleri */
+      --popup-bg-dark: linear-gradient(135deg, #a13300 0%, #d95b00 100%);
+      --popup-text-dark: #f0f0f0;
+      --button-bg-dark: rgba(0, 0, 0, 0.2);
+      --button-hover-bg-dark: rgba(0, 0, 0, 0.3);
+      --status-bg-dark: rgba(0, 0, 0, 0.15);
+    }
     body {
-      min-width: 150px;
-      font-family: Arial, sans-serif;
-      padding: 10px;
-      background-color: white;
-      color: black;
-      transition: background-color 0.3s, color 0.3s;
-      border-radius: 30px;
+      width: 250px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      margin: 0;
+      background: var(--popup-bg);
+      color: var(--popup-text);
+      transition: background 0.3s ease;
     }
-
     body.dark {
-      background-color: #2e2e2e;
-      color: white;
+      background: var(--popup-bg-dark);
+      color: var(--popup-text-dark);
     }
-
-    #status {
-      font-weight: bold;
-      margin-top: 5px;
-      border-radius: 30px;
-      padding: 5px 10px;
-      background-color: #f0f0f0;
+    .control-group { margin-bottom: 12px; text-align: center; }
+    p#status {
+      font-weight: bold; margin-top: 8px; border-radius: 50px;
+      padding: 8px 12px; background-color: var(--status-bg);
+      font-size: 14px; display: block;
     }
-
-    body.dark #status {
-      background-color: #444;
+    body.dark p#status { background-color: var(--status-bg-dark); }
+    .btn {
+      padding: 10px; font-size: 14px; border-radius: 50px; cursor: pointer;
+      border: none; width: 100%; color: inherit; transition: all 0.2s ease;
+      font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+      background-color: var(--button-bg);
     }
-
-    .toggle-button {
-      margin-top: 10px;
-      padding: 10px;
-      font-size: 14px;
-      border-radius: 30px;
-      cursor: pointer;
-      border: none;
-      width: 100%;
-      color: white;
-      transition: background-color 0.3s;
+    body.dark .btn { background-color: var(--button-bg-dark); }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      background-color: var(--button-hover-bg);
     }
-
-    /* Eklenti aktif/pasif butonu için */
-    .enabled {
-      background-color: #4CAF50;
-    }
-
-    .disabled {
-      background-color: #d9534f;
-    }
-
-    body.dark .enabled {
-      background-color: #5cb85c;
-    }
-
-    body.dark .disabled {
-      background-color: #c9302c;
-    }
-
-    /* Tema butonu için (renkler temaya göre değişir) */
-    .mode-button {
-      color: black;
-      background-color: #e0e0e0;
-    }
-
-    body.dark .mode-button {
-      color: white;
-      background-color: #555;
-    }
-
-    #reloadPage {
-      margin-top: 15px;
-      padding: 10px;
-      font-size: 14px;
-      border-radius: 30px;
-      cursor: pointer;
-      border: none;
-      background-color: #2196F3;
-      color: white;
-      width: 100%;
-    }
-
-    body.dark #reloadPage {
-      background-color: #337ab7;
-    }
+    body.dark .btn:hover { background-color: var(--button-hover-bg-dark); }
+    .btn.enabled { background-color: #27ae60; }
+    .btn.disabled { background-color: #c0392b; }
+    body.dark .btn.enabled { background-color: #2ecc71; }
+    body.dark .btn.disabled { background-color: #e74c3c; }
+    .icon { margin-right: 8px; vertical-align: middle; }
   </style>
 </head>
 <body>
-  <button id="toggleScript" class="toggle-button">Eklenti Durumu</button>
-  <p id="status">Durum kontrol ediliyor...</p>
-  <button id="darkMode" class="toggle-button mode-button">Koyu Tema</button>
-  <button id="reloadPage">Sayfayı Yenile</button>
-
+  <div class="control-group">
+    <button id="toggleScript" class="btn"></button>
+    <p id="status"></p>
+  </div>
+  <div class="control-group">
+    <button id="openSidePanelBtn" class="btn">
+      <span class="icon">⚙️</span><span data-i18n-text="openSidePanel"></span>
+    </button>
+  </div>
+  <div class="control-group">
+    <button id="darkModeBtn" class="btn">
+      <span class="icon">🌙</span><span data-i18n-text="toggleDarkMode"></span>
+    </button>
+  </div>
+  <div class="control-group">
+    <button id="visitWebsiteBtn" class="btn">
+      <span class="icon">🌐</span><span data-i18n-text="visitWebsite"></span>
+    </button>
+  </div>
+  <div class="control-group" style="margin-bottom: 0;">
+    <button id="rateExtensionBtn" class="btn">
+      <span class="icon">⭐</span><span data-i18n-text="rateExtension"></span>
+    </button>
+  </div>
   <script src="popup.js"></script>
 </body>
 </html>

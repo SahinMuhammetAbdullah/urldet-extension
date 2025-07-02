@@ -1,40 +1,25 @@
 chrome.storage.sync.get(["extensionEnabled"], function (result) {
     if (!(result.extensionEnabled ?? true)) {
-        console.log("Eklenti pasif durumda, analiz yapılmayacak.");
+        console.log("URLDet: Eklenti pasif, analiz yapılmayacak.");
         return;
     }
 
     const searchLinks = document.querySelectorAll('#search a[href^="http"]');
 
     const excludedSelectors = [
-        '.kp-blk', // Google bilgi paneli bloğu (knowledge panel block)
-        '.knowledge-panel', // Sağ tarafta çıkan detaylı bilgi paneli
-        '.mgAbYb.OSrXXb.RES9jf.IFnjPb', // Google'ın öne çıkan snippet bileşeni
-        '.ZxS7Db', // Arama sonucunda çıkan kart yapısı (örneğin haber kutuları)
-        '.Ea5p3b', // Reklam kutuları
-        '.rGhul', // Google arama sonuçlarındaki hızlı cevap kutusu
-        '.UFQ0Gb.SLPe5b', // Üstteki hızlı link seçenekleri ya da "Araçlar" bölümü
-        '.action-menu', // Seçenek menüsü (örneğin üç nokta menüsü)
-        '.V0MxL', // Arama sonucu üstündeki bağlantı türü filtreleri (Tümü, Görseller vb.)
-        '.commercial-unit-desktop-top', // Sayfanın üst kısmında yer alan reklamlar
-        '.kb0PBd.LnCrMe', // Sayfanın yan kısmındaki bazı özel bileşenler
-        '.rIRoqf', // Kullanıcı tarafından özelleştirilmiş sonuçlar veya öneriler
-        '[aria-label*="Çeviri"]', // "Çeviri" ibaresi içeren bileşenler
-        '[aria-label*="Translate"]', // "Translate" içeren öğeler (İngilizce çeviri kutuları)
-        'a[href*="translate.google"]', // translate.google.com bağlantıları
-        '.uhHOwf', // Google özel bilgi kartları (örneğin tarih, saat, konum bilgisi)
-        '.XNo5Ab', // Sıkça sorulan sorular (FAQ) kutuları
-        '.ez24Df', // Google'ın önerilen sorgular bileşeni
-        '.jfk-button', // Google’ın klasik buton bileşeni (örneğin "Daha fazla göster")
-        '.VfPpkd-Bz112c' // Material Design ile yapılmış modern Google butonları
-    ]; 
+        '.kp-blk', '.knowledge-panel', '.mgAbYb.OSrXXb.RES9jf.IFnjPb',
+        '.ZxS7Db', '.Ea5p3b', '.rGhul', '.UFQ0Gb.SLPe5b', '.action-menu',
+        '.V0MxL', '.commercial-unit-desktop-top', '.kb0PBd.LnCrMe', '.rIRoqf',
+        '[aria-label*="Çeviri"]', '[aria-label*="Translate"]',
+        'a[href*="translate.google"]', '.uhHOwf', '.XNo5Ab', '.ez24Df',
+        '.jfk-button', '.VfPpkd-Bz112c'
+    ];
 
     searchLinks.forEach(link => {
+        // Engellenen bir elementin içindeyse atla
         if (excludedSelectors.some(sel => link.closest(sel))) return;
-
-        // Önceki ikonları temizle
-        const existingIcons = link.querySelectorAll('img[data-extension-icon]');
-        existingIcons.forEach(icon => icon.remove());
+        // Zaten ikon eklenmişse atla
+        if (link.querySelector('img[data-extension-icon]')) return;
 
         const url = link.href;
 
@@ -43,45 +28,35 @@ chrome.storage.sync.get(["extensionEnabled"], function (result) {
                 console.error("Mesaj hatası:", chrome.runtime.lastError.message);
                 return;
             }
+            if (!response || response.error) {
+                console.error("Analiz başarısız:", response?.message);
+                return;
+            }
 
-            // İkon tipi belirle
             let iconName = null;
             let titleText = "";
 
-            if (response?.is_malicious === true) {
-                const type = response.malware_type?.toLowerCase();
+            if (response.is_malicious === true) {
+                const type = response.malware_type?.toLowerCase() || "unknown";
                 const validTypes = ["phishing", "spam", "malware", "defacement"];
-
-                if (validTypes.includes(type)) {
-                    iconName = `${type}.png`;
-                    titleText = `Zararlı bağlantı: ${type}`;
-                } else {
-                    console.warn("Bilinmeyen zarar türü:", type);
-                    return;
-                }
-            } else if (response?.is_malicious === false) {
+                iconName = validTypes.includes(type) ? `${type}.png` : "malware.png"; // Bilinmeyen türler için genel malware ikonu
+                // Yerelleştirilmiş metni al
+                titleText = chrome.i18n.getMessage("maliciousLink", type);
+            } else if (response.is_malicious === false) {
                 iconName = "being.png";
-                titleText = "Güvenli bağlantı";
+                // Yerelleştirilmiş metni al
+                titleText = chrome.i18n.getMessage("safeLink");
             } else {
-                return; // analiz başarısız, ikon ekleme
+                return; // Sonuç belirsizse ikon ekleme
             }
 
-            // İkon oluştur ve ekle
             const icon = document.createElement("img");
             icon.src = chrome.runtime.getURL(`icons/${iconName}`);
             icon.setAttribute("data-extension-icon", "true");
-
-            icon.style.cssText = `
-                width: 16px;
-                height: 16px;
-                margin-right: 5px;
-                vertical-align: middle;
-                display: inline-block;
-            `;
+            icon.style.cssText = `width: 16px; height: 16px; margin-right: 5px; vertical-align: middle; display: inline-block;`;
             icon.title = titleText;
 
-            link.insertBefore(icon, link.firstChild);
-            link.insertAdjacentText('afterbegin', ' ');
+            link.prepend(icon, ' ');
         });
     });
 });
