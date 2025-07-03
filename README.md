@@ -4,7 +4,7 @@
 
 URLDet is a browser extension that enhances your online security by analyzing URLs in real-time. It integrates directly into Google search results, providing instant visual feedback on link safety, and offers a side panel for manual URL analysis. This project is the output of a graduation project.
 
-[**Visit the Website**](https://urldet.masahin.dev) | [**Read in Turkish (Türkçe Oku)**](./README.tr.md)
+[**See the Frontend (Website)**](https://urldet.masahin.dev/) | [**See the Browser Extension**](https://chrome.google.com/webstore/detail/phjancankjcbmdjcdlipmhlnjhljakjf) | [**Read in Turkish (Türkçe Oku)**](./README.tr.md)
 
 
 ## ✨ Features

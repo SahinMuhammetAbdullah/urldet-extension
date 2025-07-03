@@ -4,7 +4,7 @@
 
 URLDet, URL'leri gerçek zamanlı olarak analiz ederek çevrimiçi güvenliğinizi artıran bir tarayıcı eklentisidir. Doğrudan Google arama sonuçlarına entegre olarak bağlantı güvenliği hakkında anında görsel geri bildirim sağlar ve manuel URL analizi için bir yan panel sunar. Bu proje, bir bitirme projesinin çıktısıdır.
 
-[**Web Sitesini Ziyaret Et**](https://urldet.masahin.dev) | [**Read in English (İngilizce Oku)**](./README.md)
+[**Web Sitesini Ziyaret Et**](https://urldet.masahin.dev) | [**Tarayıcı Eklentisini Gör**](https://chrome.google.com/webstore/detail/phjancankjcbmdjcdlipmhlnjhljakjf) | [**Read in English (İngilizce Oku)**](./README.md)
 
 ---
 
