@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   rateExtensionBtn.addEventListener("click", () => {
     // Mağaza linkinizi buraya ekleyin
-    const storeUrl = "https://chrome.google.com/webstore/detail/YOUR_EXTENSION_ID";
+    const storeUrl = "https://chrome.google.com/webstore/detail/phjancankjcbmdjcdlipmhlnjhljakjf";
     chrome.tabs.create({ url: storeUrl });
   });
 });
