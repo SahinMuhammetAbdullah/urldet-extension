@@ -16,7 +16,7 @@ chrome.storage.sync.get(["extensionEnabled"], function (result) {
             padding: 12px 14px;
             border-radius: 8px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 13px;
+            font-size: 1.3rem;
             z-index: 2147483647;
             pointer-events: none;
             backdrop-filter: blur(8px);
@@ -49,11 +49,11 @@ chrome.storage.sync.get(["extensionEnabled"], function (result) {
             font-weight: 700; 
             display: block; 
             margin-bottom: 2px; 
-            font-size: 14px;
+            font-size: 1.3rem;
         }
         
         .urldet-tooltip-sub { 
-            font-size: 11px; 
+            font-size: 0.8rem; 
             opacity: 0.9; 
             font-weight: 400; 
             display: block; 
@@ -82,7 +82,7 @@ chrome.storage.sync.get(["extensionEnabled"], function (result) {
         }
 
         .urldet-percentage {
-            font-size: 14px;
+            font-size: 0.8rem;
             font-weight: 800;
             color: rgba(255,255,255, 0.95);
             min-width: 35px;
@@ -91,6 +91,16 @@ chrome.storage.sync.get(["extensionEnabled"], function (result) {
     `;
     document.head.appendChild(style);
     // -----------------------------------------------------
+    // --- 2. RENK YAPILANDIRMASI ---
+    // Her tür için özel arka plan (bg) ve progress bar (bar) renkleri
+    const colorMap = {
+        safe: { bg: "rgba(76, 175, 80, 0.95)", bar: "#C8E6C9" },       // Yeşil (Görseldeki Being)
+        malware: { bg: "rgba(211, 47, 47, 0.95)", bar: "#FFCDD2" },    // Kırmızı (Görseldeki Malware)
+        phishing: { bg: "rgba(239, 108, 0, 0.95)", bar: "#FFE0B2" },   // Turuncu (Görseldeki Phishing)
+        defacement: { bg: "rgba(173, 20, 87, 0.95)", bar: "#F8BBD0" }, // Mor/Magenta (Görseldeki Defacement)
+        spam: { bg: "rgba(249, 168, 37, 0.95)", bar: "#FFF9C4" },      // Koyu Sarı (Görseldeki Spam) - Beyaz yazı okunsun diye koyulaştırıldı
+        unknown: { bg: "rgba(97, 97, 97, 0.95)", bar: "#E0E0E0" }      // Gri (Bilinmeyen)
+    };
 
     const searchLinks = document.querySelectorAll('#search a[href^="http"]');
 
@@ -120,7 +130,8 @@ chrome.storage.sync.get(["extensionEnabled"], function (result) {
         '[aria-label*="Çeviri"]',       // "Bu sayfayı çevir" linkleri (TR)
         '[aria-label*="Translate"]',    // "Translate this page" linkleri (EN)
         'a[href*="translate.google"]',  // Doğrudan translate linkleri
-        
+        'eFM0qc BCF2pd',
+
         // -- Diğer Google Özellikleri --
         '.uhHOwf',                      // "Kullanıcılar şunu da sordu" (People also ask) bölümü
         '.XNo5Ab',                      // Video karuselleri veya küçük resimler
@@ -148,12 +159,12 @@ chrome.storage.sync.get(["extensionEnabled"], function (result) {
 
             if (response.is_malicious === true && response.malicious_probability !== undefined) {
                 // Zararlı ise "malicious_probability" değerini kullan
-                safetyScore = (response.malicious_probability * 100).toFixed(1); 
-            } 
+                safetyScore = (response.malicious_probability * 100).toFixed(1);
+            }
             else if (response.is_malicious === false && response.benign_probability !== undefined) {
                 // Güvenli ise "benign_probability" değerini kullan
                 safetyScore = (response.benign_probability * 100).toFixed(1);
-            } 
+            }
             else {
                 // Veri gelmezse fallback (Yedek) değerler
                 safetyScore = response.is_malicious ? 95.0 : 99.0;
@@ -162,15 +173,16 @@ chrome.storage.sync.get(["extensionEnabled"], function (result) {
             if (response.is_malicious === true) {
                 const type = response.malware_type?.toLowerCase() || "unknown";
                 const validTypes = ["phishing", "spam", "malware", "defacement"];
-                
+
                 iconName = validTypes.includes(type) ? `${type}.png` : "malware.png";
-                tooltipColor = "rgba(220, 53, 69, 0.95)"; // Kırmızı
+                // Color Map'ten rengi çek (Yoksa varsayılan malware kırmızısını kullan)
+                const theme = colorMap[type] || colorMap["malware"];
+                tooltipColor = theme.bg;
+                barColor = theme.bar;
 
                 const riskTitle = chrome.i18n.getMessage("tooltip_risk_title") || "Risk Detected";
                 const typeLabel = chrome.i18n.getMessage("tooltip_type_label") || "Type:";
                 const localizedType = chrome.i18n.getMessage("maliciousLink", type) || type.toUpperCase();
-
-                const barColor = "#ffb3b3"; 
 
                 tooltipHtml = `
                     <span class="urldet-tooltip-title">⚠️ ${riskTitle}</span>
@@ -185,13 +197,16 @@ chrome.storage.sync.get(["extensionEnabled"], function (result) {
                 `;
 
             } else if (response.is_malicious === false) {
+                // --- GÜVENLİ ---
                 iconName = "being.png";
-                tooltipColor = "rgba(40, 167, 69, 0.95)"; // Yeşil
+
+                // Color Map'ten güvenli rengi çek
+                const theme = colorMap["safe"];
+                tooltipColor = theme.bg;
+                barColor = theme.bar;
 
                 const safeTitle = chrome.i18n.getMessage("tooltip_safe_title") || "Safe Connection";
                 const safeDesc = chrome.i18n.getMessage("tooltip_safe_desc") || "No threats found";
-
-                const barColor = "#b3ffcc"; 
 
                 tooltipHtml = `
                     <span class="urldet-tooltip-title">🛡️ ${safeTitle}</span>
@@ -214,11 +229,11 @@ chrome.storage.sync.get(["extensionEnabled"], function (result) {
             icon.setAttribute("data-extension-icon", "true");
             icon.setAttribute("data-html", tooltipHtml);
             icon.setAttribute("data-color", tooltipColor);
-            icon.style.cssText = `width: 16px; height: 16px; margin-right: 6px; vertical-align: middle; display: inline-block; cursor: help;`;
+            icon.style.cssText = `width: 26px; height: 26px; margin-right: 6px; vertical-align: middle; display: inline-block; cursor: help;`;
 
             icon.addEventListener("mouseenter", (e) => {
                 document.querySelectorAll(".urldet-tooltip-container").forEach(el => el.remove());
-                
+
                 const targetIcon = e.target;
                 const htmlContent = targetIcon.getAttribute("data-html");
                 const colorCode = targetIcon.getAttribute("data-color");
@@ -227,12 +242,12 @@ chrome.storage.sync.get(["extensionEnabled"], function (result) {
                 tooltip.className = "urldet-tooltip-container";
                 tooltip.innerHTML = htmlContent;
                 tooltip.style.setProperty('--urldet-tooltip-bg', colorCode);
-                
+
                 document.body.appendChild(tooltip);
 
                 const rect = targetIcon.getBoundingClientRect();
                 const tooltipRect = tooltip.getBoundingClientRect();
-                const leftPos = rect.left + (rect.width / 2) - 20; 
+                const leftPos = rect.left + (rect.width / 2) - 20;
                 const topPos = rect.top + window.scrollY - tooltipRect.height - 10;
 
                 tooltip.style.left = `${leftPos}px`;
