@@ -36,5 +36,21 @@
     "visitWebsite": { "message": "Visit Website" },
     "rateExtension": { "message": "Rate Extension" },
     "footerCopyright": { "message": "© 2025 URLDet" },
-    "toggleDarkMode": { "message": "Toggle Dark Mode" }
+    "toggleDarkMode": { "message": "Toggle Dark Mode" },
+    "tooltip_risk_title": {
+        "message": "Risk Detected",
+        "description": "Tooltip title: When malicious link is found"
+    },
+    "tooltip_type_label": {
+        "message": "Type:",
+        "description": "Tooltip label: Specifying the malware type"
+    },
+    "tooltip_safe_title": {
+        "message": "Safe Connection",
+        "description": "Tooltip title: When link is safe"
+    },
+    "tooltip_safe_desc": {
+        "message": "No threats found",
+        "description": "Tooltip description: When link is safe"
+    }
 }

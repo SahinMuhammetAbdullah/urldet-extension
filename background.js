@@ -1,4 +1,3 @@
-// content.js veya sidepanel.js'den gelen analiz isteklerini dinle
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // 1. ANALİZ İSTEĞİ İŞLEME
     if (request.action === "analyzeUrl") {

@@ -36,5 +36,21 @@
     "visitWebsite": { "message": "Web Sitesini Ziyaret Et" },
     "rateExtension": { "message": "Eklentiyi Değerlendir" },
     "footerCopyright": { "message": "© 2025 URLDet" },
-    "toggleDarkMode": { "message": "Koyu Tema Aç/Kapat" }
+    "toggleDarkMode": { "message": "Koyu Tema Aç/Kapat" },
+    "tooltip_risk_title": {
+        "message": "Risk Tespit Edildi",
+        "description": "Tooltip başlığı: Zararlı link bulunduğunda"
+    },
+    "tooltip_type_label": {
+        "message": "Tür:",
+        "description": "Tooltip etiketi: Zararlı yazılım türünü belirtirken"
+    },
+    "tooltip_safe_title": {
+        "message": "Güvenli Bağlantı",
+        "description": "Tooltip başlığı: Link güvenli olduğunda"
+    },
+    "tooltip_safe_desc": {
+        "message": "Tehdit bulunamadı",
+        "description": "Tooltip açıklaması: Link güvenli olduğunda"
+    }
 }
