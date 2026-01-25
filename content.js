@@ -132,6 +132,26 @@ chrome.storage.sync.get(["extensionEnabled"], function (result) {
         'a[href*="translate.google"]',  // Doğrudan translate linkleri
         'eFM0qc BCF2pd',
 
+        // -- Görseller ve Resim İçerikleri --
+        '.MjjYud img',             // Arama sonuçlarının yanındaki küçük resimler
+        '.hdtb-mitem img',         // Sekme ikonları ve küçük resimler
+        '.FA7L0b',                 // Görsel karuselleri (Image carousels) ana kapsayıcısı
+        '.isv-r',                  // "Görseller" sekmesindeki her bir resim kutusu
+        '.G09uS',                  // Resimlerin üzerindeki link yapıları
+        '.uOAZY',                  // Görsel sonuçlardaki başlık ve site bilgisi alanı
+        '.mJvOnd',                 // Çoklu görsel içeren bloklar
+        'g-img',                   // Google'ın özel görsel etiket sarmalayıcısı
+
+        // -- Görsel Sonuçlar ve Resimli Alanlar --
+        '.m611P',                      // Görsel arama sonuçları ızgarası
+        '.islrc',                       // Görsel sonuçların ana listesi
+        '.Wr39nb',                      // Görsel önizleme pencereleri
+        '.icp-m',                       // Resim üzerindeki "lens" veya "büyüteç" ikonları
+        '.BYv0lb',                      // Görsel arama filtreleme butonları
+        '[data-bm]',                    // Google'ın görselleri işaretlemek için kullandığı veri niteliği
+        '.iUe60b',                      // Resim altı açıklamaları
+        '.isv-r.PNCp9b',                // Benzer görseller paneli
+
         // -- Diğer Google Özellikleri --
         '.uhHOwf',                      // "Kullanıcılar şunu da sordu" (People also ask) bölümü
         '.XNo5Ab',                      // Video karuselleri veya küçük resimler
