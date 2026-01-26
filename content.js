@@ -141,6 +141,11 @@ chrome.storage.sync.get(["extensionEnabled"], function (result) {
         '.uOAZY',                  // Görsel sonuçlardaki başlık ve site bilgisi alanı
         '.mJvOnd',                 // Çoklu görsel içeren bloklar
         'g-img',                   // Google'ın özel görsel etiket sarmalayıcısı
+        '.EXH1Ce',
+        '.cakeVe .vCUuC',
+        '.TElO2c',
+        '.uEierd .vdQmEd',
+
 
         // -- Görsel Sonuçlar ve Resimli Alanlar --
         '.m611P',                      // Görsel arama sonuçları ızgarası
@@ -249,7 +254,7 @@ chrome.storage.sync.get(["extensionEnabled"], function (result) {
             icon.setAttribute("data-extension-icon", "true");
             icon.setAttribute("data-html", tooltipHtml);
             icon.setAttribute("data-color", tooltipColor);
-            icon.style.cssText = `width: 26px; height: 26px; margin-right: 6px; vertical-align: middle; display: inline-block; cursor: help;`;
+            icon.style.cssText = `width: 20px; height: 20px; margin-right: 4px; vertical-align: middle; display: inline-block; cursor: help;`;
 
             icon.addEventListener("mouseenter", (e) => {
                 document.querySelectorAll(".urldet-tooltip-container").forEach(el => el.remove());
